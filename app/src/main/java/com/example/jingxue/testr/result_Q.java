@@ -5,6 +5,7 @@ public class result_Q {
     String correct;
     String resultQ;
     int number;
+
     public result_Q(String correct, String answer, String result, int number) {
         this.correct = correct;
         this.answer = answer;

@@ -36,14 +36,18 @@ class model extends Observable{
         return "Mark: is  " + String.valueOf(mark);
     }
 
+    // compare student answer with correct answer
+    // store the result in result_student
+    // store the mark in mark
     public ArrayList<result_Q> getResultQS() {
 
         result_student = new ArrayList<Question>();
         resultQS = new ArrayList<result_Q>();
         int correct_num = 0;
+        // go through the array
         for(int i = 0; i < answer.size(); i++){
             String resultQ;
-
+            //check the answer
             if(answer.get(i).getAnswer() == correct_answer.get(i).getAnswer()){
                 correct_num ++;
                 resultQ = "True";
@@ -52,10 +56,11 @@ class model extends Observable{
                 resultQ = "False";
                 result_student.add(new Question(i, "False"));
             }
+            // store the result in to resultQS
             resultQS.add(new result_Q(correct_answer.get(i).getAnswer(), answer.get(i).getAnswer(), resultQ, answer.get(i).getNumber()));
 
         }
-        //mark = ((((double) correct_num / (double) answer.size()) * 100));
+        // Calculate the mark
         mark = (int)((double) correct_num / (double) answer.size() * 100) ;
         notifyObservers();
         return resultQS;
