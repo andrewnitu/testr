@@ -17,15 +17,25 @@ class model extends Observable{
     private ArrayList<Question> answer;
     private ArrayList<Question> result_student;
     private int mark = 0;
-    private ArrayList<result_Q> resultQS;
+    private int count = 0;
 
+    private ArrayList<result_Q> resultQS;
+    private ArrayList<Integer> studentScore = new ArrayList<Integer>();
 
     public ArrayList<Question> getAnswer(){
         return answer;
     }
 
+    public int getCount() {
+        return count;
+    }
+
     public ArrayList<Question> getCorrect_answer() {
         return correct_answer;
+    }
+
+    public ArrayList<Integer> getStudentScore() {
+        return studentScore;
     }
 
     public ArrayList<Question> getResult_student() {
@@ -40,15 +50,15 @@ class model extends Observable{
     // store the result in result_student
     // store the mark in mark
     public ArrayList<result_Q> getResultQS() {
-
         result_student = new ArrayList<Question>();
         resultQS = new ArrayList<result_Q>();
         int correct_num = 0;
         // go through the array
         for(int i = 0; i < answer.size(); i++){
             String resultQ;
+            Log.i("TAG",  answer.get(i).getAnswer() + " " + correct_answer.get(i).getAnswer());
             //check the answer
-            if(answer.get(i).getAnswer() == correct_answer.get(i).getAnswer()){
+            if(answer.get(i).getAnswer().equals(correct_answer.get(i).getAnswer())){
                 correct_num ++;
                 resultQ = "True";
                 result_student.add(new Question(i,"True"));
@@ -56,16 +66,29 @@ class model extends Observable{
                 resultQ = "False";
                 result_student.add(new Question(i, "False"));
             }
+            Log.i("TAG", resultQ);
+
             // store the result in to resultQS
             resultQS.add(new result_Q(correct_answer.get(i).getAnswer(), answer.get(i).getAnswer(), resultQ, answer.get(i).getNumber()));
 
         }
         // Calculate the mark
         mark = (int)((double) correct_num / (double) answer.size() * 100) ;
+        studentScore.add(mark);
+        count ++;
         notifyObservers();
         return resultQS;
     }
 
+    public String getTotal (){
+        int total = 0 ;
+        for(int i =0; i < studentScore.size(); i++)
+        {
+            total = total + studentScore.get(i);
+        }
+        return String.valueOf(total);
+
+    }
 
 
     public void setAnswer( ArrayList<Question> a){

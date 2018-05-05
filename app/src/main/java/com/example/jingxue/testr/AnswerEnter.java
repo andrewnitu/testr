@@ -38,18 +38,31 @@ public class AnswerEnter extends AppCompatActivity implements Observer{
             public void onClick(View v) {
                  ArrayList<Question> correct_answer;
                  ArrayList<Question> answer;
-                 correct_answer = new ArrayList<Question>();
-                 correct_answer.add(new Question(1,"A"));
-                 correct_answer.add(new Question(2,"A"));
-                correct_answer.add(new Question(3,"C"));
-                 mModel.setCorrect_answer(correct_answer);
-                 answer = new ArrayList<Question>();
-                 answer.add(new Question(1,"A"));
-                 answer.add(new Question(2,"A"));
-                 answer.add(new Question(3,"B"));
-                 mModel.setAnswer(answer);
+                 if(mModel.getCount() == 0) {
+                     correct_answer = new ArrayList<Question>();
+                     correct_answer.add(new Question(1, "A"));
+                     correct_answer.add(new Question(2, "A"));
+                     correct_answer.add(new Question(3, "C"));
+                   //  mModel.setCorrect_answer(correct_answer);
+                     answer = new ArrayList<Question>();
+                     answer.add(new Question(1, "A"));
+                     answer.add(new Question(2, "A"));
+                     answer.add(new Question(3, "B"));
+                    // mModel.setAnswer(answer);
+                 }else{
+                     correct_answer = new ArrayList<Question>();
+                     correct_answer.add(new Question(1, "A"));
+                     correct_answer.add(new Question(2, "B"));
+                    // mModel.setCorrect_answer(correct_answer);
+                     answer = new ArrayList<Question>();
+                     answer.add(new Question(1, "A"));
+                     answer.add(new Question(2, "A"));
+                    // mModel.setAnswer(answer);
+                 }
                 Intent intent = new Intent();
                 intent.setClass(AnswerEnter.this, result.class);
+                intent.putExtra("correctAnswer", correct_answer);
+                intent.putExtra("answer", answer);
                 startActivity(intent);
             }
         });

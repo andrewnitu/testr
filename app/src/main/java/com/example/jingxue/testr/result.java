@@ -1,5 +1,6 @@
 package com.example.jingxue.testr;
 
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -42,18 +43,46 @@ public class result extends AppCompatActivity implements Observer {
     GridView gridView;
     TextView MarkView;
     final Context context = this;
-
+    Button scanOther;
+    Button seeClassResult;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get Model instance
         mModel = model.getInstance();
         mModel.addObserver(this);
-
         setContentView(R.layout.activity_result);
+        //set up answer and correct answer
+        // by intent
+        ArrayList<Question> answer = (ArrayList<Question>) getIntent().getSerializableExtra("answer");
+        mModel.setAnswer(answer);
+        ArrayList<Question> correct_answer = (ArrayList<Question>) getIntent().getSerializableExtra("correctAnswer");
+        mModel.setCorrect_answer(correct_answer);
         // set gridView
         // load data from resultQS ( student question result) to the grid view
         gridView = (GridView) findViewById(R.id.GridView_Result);
+        scanOther = (Button) findViewById(R.id.scanOther);
+        scanOther.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(result.this, AnswerEnter.class);
+                startActivity(intent);
+            }
+        });
+
+        seeClassResult = (Button) findViewById(R.id.seeClassResult);
+        seeClassResult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(result.this, statics.class);
+                intent.putExtra("Total", mModel.getTotal());
+                intent.putIntegerArrayListExtra("score", mModel.getStudentScore());
+                startActivity(intent);
+            }
+        });
+
         final ArrayList<result_Q> resultQS;
         resultQS = new ArrayList<result_Q>(mModel.getResultQS());
         // load with Adapter
@@ -83,10 +112,12 @@ public class result extends AppCompatActivity implements Observer {
                         dialog.dismiss();
                     }
                 });
+
                 // show dialog
                 dialog.show();
-
             }
+
+
 
         });
 

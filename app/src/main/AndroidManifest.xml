@@ -17,7 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".AnswerEnter" />
-        <activity android:name=".result"></activity>
+        <activity android:name=".result" />
+        <activity android:name=".statics"></activity>
     </application>
 
 </manifest>

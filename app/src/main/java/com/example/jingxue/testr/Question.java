@@ -1,6 +1,10 @@
 package com.example.jingxue.testr;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Question {
+import java.io.Serializable;
+
+public class Question implements Serializable {
     int number;
     String answer;
 
