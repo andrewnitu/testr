@@ -39,12 +39,14 @@ public class AnswerEnter extends AppCompatActivity implements Observer{
                  ArrayList<Question> correct_answer;
                  ArrayList<Question> answer;
                  correct_answer = new ArrayList<Question>();
-                 correct_answer.add(new Question(1,"B"));
+                 correct_answer.add(new Question(1,"A"));
                  correct_answer.add(new Question(2,"A"));
+                correct_answer.add(new Question(3,"C"));
                  mModel.setCorrect_answer(correct_answer);
                  answer = new ArrayList<Question>();
                  answer.add(new Question(1,"A"));
                  answer.add(new Question(2,"A"));
+                 answer.add(new Question(3,"B"));
                  mModel.setAnswer(answer);
                 Intent intent = new Intent();
                 intent.setClass(AnswerEnter.this, result.class);

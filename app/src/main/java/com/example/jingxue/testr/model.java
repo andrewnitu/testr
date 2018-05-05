@@ -16,6 +16,9 @@ class model extends Observable{
     private ArrayList<Question> correct_answer;
     private ArrayList<Question> answer;
     private ArrayList<Question> result_student;
+    private int mark = 0;
+    private ArrayList<result_Q> resultQS;
+
 
     public ArrayList<Question> getAnswer(){
         return answer;
@@ -29,20 +32,36 @@ class model extends Observable{
         return result_student;
     }
 
-    public String result_string(){
-        String result_s  = "";
-        for(int i = 0; i < answer.size(); i++){
-            result_s = result_s + answer.get(i).getNumber() + ": " + answer.get(i).getAnswer() + " " + correct_answer.get(i).getAnswer();
-            if(answer.get(i).getAnswer() == correct_answer.get(i).getAnswer()){
-                result_s = result_s + " " + "True";
-            }else{
-                result_s = result_s + " " + "False";
-            }
-            result_s = result_s + "\n";
-        }
-        return result_s;
-
+    public String getMark() {
+        return "Mark: is  " + String.valueOf(mark);
     }
+
+    public ArrayList<result_Q> getResultQS() {
+
+        result_student = new ArrayList<Question>();
+        resultQS = new ArrayList<result_Q>();
+        int correct_num = 0;
+        for(int i = 0; i < answer.size(); i++){
+            String resultQ;
+
+            if(answer.get(i).getAnswer() == correct_answer.get(i).getAnswer()){
+                correct_num ++;
+                resultQ = "True";
+                result_student.add(new Question(i,"True"));
+            }else{
+                resultQ = "False";
+                result_student.add(new Question(i, "False"));
+            }
+            resultQS.add(new result_Q(correct_answer.get(i).getAnswer(), answer.get(i).getAnswer(), resultQ, answer.get(i).getNumber()));
+
+        }
+        //mark = ((((double) correct_num / (double) answer.size()) * 100));
+        mark = (int)((double) correct_num / (double) answer.size() * 100) ;
+        notifyObservers();
+        return resultQS;
+    }
+
+
 
     public void setAnswer( ArrayList<Question> a){
         answer = new ArrayList<Question>(a);
