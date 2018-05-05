@@ -47,11 +47,11 @@ public class TestAdapter extends BaseAdapter {
             view = layoutInflater.inflate(R.layout.layout_answer, null);
         }
 
-        final TextView answer = view.findViewById(R.id.answer);
-        final TextView questionNumber = view.findViewById(R.id.question_number);
+        TextView answer = view.findViewById(R.id.answer);
+        TextView questionNumber = view.findViewById(R.id.question_number);
 
         answer.setText(question.getAnswer());
-        questionNumber.setText(question.getNumber());
+        questionNumber.setText(String.valueOf(question.getNumber()));
 
         return view;
     }

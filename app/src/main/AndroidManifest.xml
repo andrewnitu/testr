@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".TestInpt"
-            android:label="@string/title_activity_test_inpt"
+            android:label="Solutions"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">
             <intent-filter>
