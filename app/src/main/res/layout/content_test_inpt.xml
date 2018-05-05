@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="testr.testr.com.TestInpt"
+    tools:showIn="@layout/activity_test_inpt">
+
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:id="@+id/gridview"
+        android:verticalSpacing="5dp"
+        android:horizontalSpacing="5dp"
+        android:stretchMode="columnWidth"
+        android:gravity="center"
+        android:numColumns="auto_fit"
+        android:columnWidth="80dp"
+        android:requiresFadingEdge="vertical"
+        android:fadingEdge="vertical">
+
+
+
+    </GridView>
+
+</android.support.constraint.ConstraintLayout>
