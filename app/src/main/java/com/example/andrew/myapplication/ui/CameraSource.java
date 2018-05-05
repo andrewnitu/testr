@@ -138,7 +138,6 @@ public class CameraSource {
     // these aren't used outside of the method that creates them, they still must have hard
     // references maintained to them.
     private SurfaceView mDummySurfaceView;
-    private SurfaceTexture mDummySurfaceTexture;
 
     /**
      * Dedicated thread and associated runnable for calling into the detector with frames, as the
@@ -471,69 +470,6 @@ public class CameraSource {
     }
 
     /**
-     * Wraps the camera1 shutter callback so that the deprecated API isn't exposed.
-     */
-    private class PictureStartCallback implements Camera.ShutterCallback {
-        private ShutterCallback mDelegate;
-
-        @Override
-        public void onShutter() {
-            if (mDelegate != null) {
-                mDelegate.onShutter();
-            }
-        }
-    }
-
-    /**
-     * Wraps the final callback in the camera sequence, so that we can automatically turn the camera
-     * preview back on after the picture has been taken.
-     */
-    private class PictureDoneCallback implements Camera.PictureCallback {
-        private PictureCallback mDelegate;
-
-        @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
-            if (mDelegate != null) {
-                mDelegate.onPictureTaken(data);
-            }
-            synchronized (mCameraLock) {
-                if (mCamera != null) {
-                    mCamera.startPreview();
-                }
-            }
-        }
-    }
-
-    /**
-     * Wraps the camera1 auto focus callback so that the deprecated API isn't exposed.
-     */
-    private class CameraAutoFocusCallback implements Camera.AutoFocusCallback {
-        private AutoFocusCallback mDelegate;
-
-        @Override
-        public void onAutoFocus(boolean success, Camera camera) {
-            if (mDelegate != null) {
-                mDelegate.onAutoFocus(success);
-            }
-        }
-    }
-
-    /**
-     * Wraps the camera1 auto focus move callback so that the deprecated API isn't exposed.
-     */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private class CameraAutoFocusMoveCallback implements Camera.AutoFocusMoveCallback {
-        private AutoFocusMoveCallback mDelegate;
-
-        @Override
-        public void onAutoFocusMoving(boolean start, Camera camera) {
-            if (mDelegate != null) {
-                mDelegate.onAutoFocusMoving(start);
-            }
-        }
-    }
-
-    /**
      * Opens the camera and applies the user settings.
      *
      * @throws RuntimeException if the method fails
@@ -676,7 +612,7 @@ public class CameraSource {
         private Size mPreview;
         private Size mPicture;
 
-        public SizePair(Camera.Size previewSize,
+        private SizePair(Camera.Size previewSize,
                         Camera.Size pictureSize) {
             mPreview = new Size(previewSize.width, previewSize.height);
             if (pictureSize != null) {
@@ -684,12 +620,12 @@ public class CameraSource {
             }
         }
 
-        public Size previewSize() {
+        private Size previewSize() {
             return mPreview;
         }
 
         @SuppressWarnings("unused")
-        public Size pictureSize() {
+        private Size pictureSize() {
             return mPicture;
         }
     }
