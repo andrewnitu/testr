@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/layout_bg"
     android:gravity="center">
 
     <TextView
@@ -15,6 +16,7 @@
         android:paddingTop="4dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
+        android:textColor="#000"
         android:gravity="center_horizontal"/>
 
     <TextView
@@ -26,6 +28,7 @@
         android:paddingTop="4dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
+        android:textColor="#000"
         android:gravity="center_horizontal"/>
 
 </LinearLayout>

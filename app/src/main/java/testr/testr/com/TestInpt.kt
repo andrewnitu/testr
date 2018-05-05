@@ -1,11 +1,14 @@
 package testr.testr.com
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.widget.EditText
 import android.widget.GridView
 import kotlinx.android.synthetic.main.activity_test_inpt.*
+
+
 
 class TestInpt : AppCompatActivity() {
 
@@ -14,12 +17,29 @@ class TestInpt : AppCompatActivity() {
         setContentView(R.layout.activity_test_inpt)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
+        val questionNumber = 0
+        val questions = arrayListOf<Question>()
 
-        val questions = arrayOf<Question>()
+        fab.setOnClickListener { view ->
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Question " + questionNumber)
+            builder.setMessage("Please select an answer:")
+            val input = EditText(this)
+            builder.setView(input)
+
+
+            builder.setPositiveButton("OK") { dialog, which ->
+                run {
+                    val q = Question(questionNumber, input.text.toString())
+                    questions.add(q)
+                }
+            }
+            builder.setNegativeButton("Cancel", null)
+
+            // create and show the alert dialog
+            val dialog = builder.create()
+            dialog.show()
+        }
 
         val gridView = findViewById<View>(R.id.gridview) as GridView
         val testAdapter = TestAdapter(this, questions)

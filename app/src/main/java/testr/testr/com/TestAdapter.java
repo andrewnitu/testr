@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by Kevin on 5/5/2018.
  */
@@ -14,16 +16,16 @@ import android.widget.TextView;
 public class TestAdapter extends BaseAdapter {
 
     private final Context mContext;
-    private final Question[] q;
+    private final ArrayList<Question> q;
 
-    public TestAdapter(Context context, Question[] q) {
+    public TestAdapter(Context context, ArrayList<Question> q) {
         this.mContext = context;
         this.q = q;
     }
 
     @Override
     public int getCount() {
-        return q.length;
+        return q.size();
     }
 
     @Override
@@ -38,15 +40,15 @@ public class TestAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        final Question question = this.q[i];
+        final Question question = this.q.get(i);
 
         if (view == null) {
             final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
             view = layoutInflater.inflate(R.layout.layout_answer, null);
         }
 
-        final TextView answer = (TextView) view.findViewById(R.id.answer);
-        final TextView questionNumber = (TextView) view.findViewById(R.id.question_number);
+        final TextView answer = view.findViewById(R.id.answer);
+        final TextView questionNumber = view.findViewById(R.id.question_number);
 
         answer.setText(question.getAnswer());
         questionNumber.setText(question.getNumber());
