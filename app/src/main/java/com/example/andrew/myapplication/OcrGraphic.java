@@ -15,6 +15,7 @@
  */
 package com.example.andrew.myapplication;
 
+import android.arch.lifecycle.ViewModelStoreOwner;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,6 +24,7 @@ import com.example.andrew.myapplication.ui.GraphicOverlay;
 import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,9 +39,9 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
 
     private static Paint sRectPaint;
     private static Paint sTextPaint;
-    private final TextBlock mText;
+    private final ModifiedTextBlock mText;
 
-    OcrGraphic(GraphicOverlay overlay, TextBlock text) {
+    OcrGraphic(GraphicOverlay overlay, ModifiedTextBlock text) {
         super(overlay);
 
         mText = text;
@@ -68,7 +70,7 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
         this.mId = id;
     }
 
-    public TextBlock getTextBlock() {
+    public ModifiedTextBlock getTextBlock() {
         return mText;
     }
 
@@ -80,7 +82,7 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
      * @return True if the provided point is contained within this graphic's bounding box.
      */
     public boolean contains(float x, float y) {
-        TextBlock text = mText;
+        ModifiedTextBlock text = mText;
         if (text == null) {
             return false;
         }
@@ -97,7 +99,14 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
      */
     @Override
     public void draw(Canvas canvas) {
-        TextBlock text = mText;
+        ArrayList<Question> questions = new ArrayList<>();
+
+        questions.add(new Question(1, "A"));
+        questions.add(new Question(2, "B"));
+        questions.add(new Question(3, "C"));
+        questions.add(new Question(4, "D"));
+
+        ModifiedTextBlock text = mText;
         if (text == null) {
             return;
         }
@@ -112,10 +121,22 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
 
         // Break the text into multiple lines and draw each one according to its own bounding box.
         List<? extends Text> textComponents = text.getComponents();
-        for(Text currentText : textComponents) {
-            float left = translateX(currentText.getBoundingBox().left);
-            float bottom = translateY(currentText.getBoundingBox().bottom);
-            canvas.drawText(currentText.getValue(), left, bottom, sTextPaint);
+        for(int i = 0; i < textComponents.size(); i++) {
+            float left = translateX(textComponents.get(i).getBoundingBox().left);
+            float bottom = translateY(textComponents.get(i).getBoundingBox().bottom);
+
+            String questionText = textComponents.get(i).getValue();
+
+            String strippedQuestionText = questionText.replaceAll("\\s+","");
+
+            String questionNumberText = strippedQuestionText.substring(0, 1);
+            int questionNumber = Integer.parseInt(questionNumberText);
+
+            String questionAnswer = strippedQuestionText.substring(1, 2);
+
+            String correctAnswer = questions.get(questionNumber - 1).getAnswer();
+
+            canvas.drawText(textComponents.get(i).getValue() + (questionAnswer.equals(correctAnswer) ? " Correct" : " Incorrect"), left, bottom, sTextPaint);
         }
     }
 }

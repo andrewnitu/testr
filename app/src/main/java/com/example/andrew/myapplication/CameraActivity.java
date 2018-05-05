@@ -46,14 +46,15 @@ import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Activity for the multi-tracker app.  This app detects text and displays the value with the
  * rear facing camera. During detection overlay graphics are drawn to indicate the position,
  * size, and contents of each TextBlock.
  */
-public final class OcrCaptureActivity extends AppCompatActivity {
-    private static final String TAG = "OcrCaptureActivity";
+public final class CameraActivity extends AppCompatActivity {
+    private static final String TAG = "CameraActivity";
 
     // Intent request code to handle updating play services if needed.
     private static final int RC_HANDLE_GMS = 9001;
@@ -74,6 +75,9 @@ public final class OcrCaptureActivity extends AppCompatActivity {
     private ScaleGestureDetector scaleGestureDetector;
     private GestureDetector gestureDetector;
 
+    private ArrayList<Question> questions = new ArrayList<>();
+
+
     /**
      * Initializes the UI and creates the detector pipeline.
      */
@@ -82,12 +86,17 @@ public final class OcrCaptureActivity extends AppCompatActivity {
         super.onCreate(icicle);
         setContentView(R.layout.ocr_capture);
 
+        questions.add(new Question(1, "A"));
+        questions.add(new Question(2, "B"));
+        questions.add(new Question(3, "C"));
+        questions.add(new Question(4, "D"));
+
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
         mGraphicOverlay = (GraphicOverlay<OcrGraphic>) findViewById(R.id.graphicOverlay);
 
         // read parameters from the intent used to launch the activity.
-        boolean autoFocus = getIntent().getBooleanExtra(AutoFocus, false);
-        boolean useFlash = getIntent().getBooleanExtra(UseFlash, false);
+        boolean autoFocus = true;
+        boolean useFlash = false;
 
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
@@ -319,12 +328,12 @@ public final class OcrCaptureActivity extends AppCompatActivity {
      */
     private boolean onTap(float rawX, float rawY) {
         OcrGraphic graphic = mGraphicOverlay.getGraphicAtLocation(rawX, rawY);
-        TextBlock text = null;
+        ModifiedTextBlock text = null;
         if (graphic != null) {
             text = graphic.getTextBlock();
-            if (text != null && text.getValue() != null) {
+            if (text != null && text.getString() != null) {
                 Intent data = new Intent();
-                data.putExtra(TextBlockObject, text.getValue());
+                data.putExtra(TextBlockObject, text.getString());
                 setResult(CommonStatusCodes.SUCCESS, data);
                 finish();
             }
