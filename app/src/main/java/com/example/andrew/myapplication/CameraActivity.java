@@ -36,13 +36,13 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.example.andrew.myapplication.ui.*;
-import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.io.IOException;
@@ -75,6 +75,8 @@ public final class CameraActivity extends AppCompatActivity {
     private ScaleGestureDetector scaleGestureDetector;
     private GestureDetector gestureDetector;
 
+    private Button mNext;
+
     private ArrayList<Question> questions = new ArrayList<>();
 
 
@@ -91,8 +93,10 @@ public final class CameraActivity extends AppCompatActivity {
         questions.add(new Question(3, "C"));
         questions.add(new Question(4, "D"));
 
-        mPreview = (CameraSourcePreview) findViewById(R.id.preview);
-        mGraphicOverlay = (GraphicOverlay<OcrGraphic>) findViewById(R.id.graphicOverlay);
+        mPreview = findViewById(R.id.preview);
+        mGraphicOverlay = findViewById(R.id.graphicOverlay);
+
+        mNext = findViewById(R.id.next);
 
         // read parameters from the intent used to launch the activity.
         boolean autoFocus = true;
@@ -113,6 +117,11 @@ public final class CameraActivity extends AppCompatActivity {
         Snackbar.make(mGraphicOverlay, "Tap to capture. Pinch/Stretch to zoom",
                 Snackbar.LENGTH_LONG)
                 .show();
+    }
+
+    public void onNextClick(View v) {
+//        Intent myIntent = new Intent(getBaseContext(), WTF.class);
+//        startActivity(myIntent);
     }
 
     /**

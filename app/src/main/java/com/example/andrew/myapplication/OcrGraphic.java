@@ -130,13 +130,19 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
             String strippedQuestionText = questionText.replaceAll("\\s+","");
 
             String questionNumberText = strippedQuestionText.substring(0, 1);
-            int questionNumber = Integer.parseInt(questionNumberText);
 
-            String questionAnswer = strippedQuestionText.substring(1, 2);
+            try {
+                int questionNumber = Integer.parseInt(questionNumberText);
 
-            String correctAnswer = questions.get(questionNumber - 1).getAnswer();
+                String questionAnswer = strippedQuestionText.substring(1, 2);
 
-            canvas.drawText(textComponents.get(i).getValue() + (questionAnswer.equals(correctAnswer) ? " Correct" : " Incorrect"), left, bottom, sTextPaint);
+                String correctAnswer = questions.get(questionNumber - 1).getAnswer();
+
+                canvas.drawText(textComponents.get(i).getValue() + (questionAnswer.equals(correctAnswer) ? " Correct" : " Incorrect"), left, bottom, sTextPaint);
+            }
+            catch(Exception e) {
+                canvas.drawText(textComponents.get(i).getValue(), left, bottom, sTextPaint);
+            }
         }
     }
 }
