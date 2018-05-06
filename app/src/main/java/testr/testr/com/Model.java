@@ -115,7 +115,11 @@ class Model extends Observable {
 
     public void setCorrectAnswerSet(ArrayList<Question> a) {
         correct_answer = new ArrayList<Question>(a);
-        answer = new ArrayList<Question>(a);
+        answer = new ArrayList<Question>();
+
+        for(Question q:correct_answer) {
+            answer.add(new Question(q.number, "-"));
+        }
     }
 
 
