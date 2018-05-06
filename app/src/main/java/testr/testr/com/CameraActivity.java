@@ -1,18 +1,3 @@
-/*
- * Copyright (C) The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package testr.testr.com;
 
 import android.Manifest;
@@ -46,13 +31,10 @@ import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
-/**
- * Activity for the multi-tracker app.  This app detects text and displays the value with the
- * rear facing camera. During detection overlay graphics are drawn to indicate the position,
- * size, and contents of each TextBlock.
- */
-public final class CameraActivity extends AppCompatActivity {
+public final class CameraActivity extends AppCompatActivity implements Observer {
     private static final String TAG = "CameraActivity";
 
     // Intent request code to handle updating play services if needed.
@@ -76,21 +58,21 @@ public final class CameraActivity extends AppCompatActivity {
 
     private Button mNext;
 
-    private ArrayList<Question> questions = new ArrayList<>();
+    private ArrayList<Question> correctAnswers;
 
+    private Model mModel;
 
-    /**
-     * Initializes the UI and creates the detector pipeline.
-     */
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.ocr_capture);
 
-        questions.add(new Question(1, "A"));
-        questions.add(new Question(2, "B"));
-        questions.add(new Question(3, "C"));
-        questions.add(new Question(4, "D"));
+        mModel = Model.getInstance();
+        mModel.addObserver(this);
+
+        mModel.initObservers();
+
+        correctAnswers = mModel.getCorrectAnswerSet();
 
         mPreview = findViewById(R.id.preview);
         mGraphicOverlay = findViewById(R.id.graphicOverlay);
@@ -119,15 +101,10 @@ public final class CameraActivity extends AppCompatActivity {
     }
 
     public void onNextClick(View v) {
-//        Intent myIntent = new Intent(getBaseContext(), WTF.class);
-//        startActivity(myIntent);
+        Intent myIntent = new Intent(getBaseContext(), ResultsActivity.class);
+        startActivity(myIntent);
     }
 
-    /**
-     * Handles the requesting of the camera permission.  This includes
-     * showing a "Snackbar" message of why the permission is needed then
-     * sending the request.
-     */
     private void requestCameraPermission() {
         Log.w(TAG, "Camera permission is not granted. Requesting permission");
 
@@ -164,38 +141,15 @@ public final class CameraActivity extends AppCompatActivity {
         return b || c || super.onTouchEvent(e);
     }
 
-    /**
-     * Creates and starts the camera.  Note that this uses a higher resolution in comparison
-     * to other detection examples to enable the ocr detector to detect small text samples
-     * at long distances.
-     *
-     * Suppressing InlinedApi since there is a check that the minimum version is met before using
-     * the constant.
-     */
     @SuppressLint("InlinedApi")
     private void createCameraSource(boolean autoFocus, boolean useFlash) {
         Context context = getApplicationContext();
 
-        // A text recognizer is created to find text.  An associated processor instance
-        // is set to receive the text recognition results and display graphics for each text block
-        // on screen.
         TextRecognizer textRecognizer = new TextRecognizer.Builder(context).build();
         textRecognizer.setProcessor(new OcrDetectorProcessor(mGraphicOverlay));
 
         if (!textRecognizer.isOperational()) {
-            // Note: The first time that an app using a Vision API is installed on a
-            // device, GMS will download a native libraries to the device in order to do detection.
-            // Usually this completes before the app is run for the first time.  But if that
-            // download has not yet completed, then the above call will not detect any text,
-            // barcodes, or faces.
-            //
-            // isOperational() can be used to check if the required native libraries are currently
-            // available.  The detectors will automatically become operational once the library
-            // downloads complete on device.
             Log.w(TAG, "Detector dependencies are not yet available.");
-
-            // Check for low storage.  If there is low storage, the native library will not be
-            // downloaded, so detection will not become operational.
             IntentFilter lowstorageFilter = new IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW);
             boolean hasLowStorage = registerReceiver(null, lowstorageFilter) != null;
 
@@ -204,9 +158,6 @@ public final class CameraActivity extends AppCompatActivity {
                 Log.w(TAG, getString(R.string.low_storage_error));
             }
         }
-
-        // Creates and starts the camera.  Note that this uses a higher resolution in comparison
-        // to other detection examples to enable the text recognizer to detect small pieces of text.
         mCameraSource =
                 new CameraSource.Builder(getApplicationContext(), textRecognizer)
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
@@ -217,18 +168,12 @@ public final class CameraActivity extends AppCompatActivity {
                 .build();
     }
 
-    /**
-     * Restarts the camera.
-     */
     @Override
     protected void onResume() {
         super.onResume();
         startCameraSource();
     }
 
-    /**
-     * Stops the camera.
-     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -237,10 +182,6 @@ public final class CameraActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Releases the resources associated with the camera source, the associated detectors, and the
-     * rest of the processing pipeline.
-     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -249,28 +190,12 @@ public final class CameraActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Callback for the result from requesting permissions. This method
-     * is invoked for every call on {@link #requestPermissions(String[], int)}.
-     * <p>
-     * <strong>Note:</strong> It is possible that the permissions request interaction
-     * with the user is interrupted. In this case you will receive empty permissions
-     * and results arrays which should be treated as a cancellation.
-     * </p>
-     *
-     * @param requestCode  The request code passed in {@link #requestPermissions(String[], int)}.
-     * @param permissions  The requested permissions. Never null.
-     * @param grantResults The grant results for the corresponding permissions
-     *                     which is either {@link PackageManager#PERMISSION_GRANTED}
-     *                     or {@link PackageManager#PERMISSION_DENIED}. Never null.
-     * @see #requestPermissions(String[], int)
-     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         if (requestCode != RC_HANDLE_CAMERA_PERM) {
-            Log.d(TAG, "Got unexpected permission result: " + requestCode);
+            Log.d(TAG, "Got unexpected permission ResultsActivity: " + requestCode);
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
             return;
         }
@@ -300,11 +225,6 @@ public final class CameraActivity extends AppCompatActivity {
                 .show();
     }
 
-    /**
-     * Starts or restarts the camera source, if it exists.  If the camera source doesn't exist yet
-     * (e.g., because onResume was called before the camera source was created), this will be called
-     * again when the camera source is created.
-     */
     private void startCameraSource() throws SecurityException {
         // Check that the device has play services available.
         int code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
@@ -319,21 +239,13 @@ public final class CameraActivity extends AppCompatActivity {
             try {
                 mPreview.start(mCameraSource, mGraphicOverlay);
             } catch (IOException e) {
-                Log.e(TAG, "Unable to start camera source.", e);
+                Log.e(TAG, "Unable to Start camera source.", e);
                 mCameraSource.release();
                 mCameraSource = null;
             }
         }
     }
 
-    /**
-     * onTap is called to capture the first TextBlock under the tap location and return it to
-     * the Initializing Activity.
-     *
-     * @param rawX - the raw position of the tap
-     * @param rawY - the raw position of the tap.
-     * @return true if the activity is ending.
-     */
     private boolean onTap(float rawX, float rawY) {
         OcrGraphic graphic = mGraphicOverlay.getGraphicAtLocation(rawX, rawY);
         ModifiedTextBlock text = null;
@@ -355,8 +267,12 @@ public final class CameraActivity extends AppCompatActivity {
         return text != null;
     }
 
-    private class CaptureGestureListener extends GestureDetector.SimpleOnGestureListener {
+    @Override
+    public void update(Observable observable, Object o) {
+        // not implemented
+    }
 
+    private class CaptureGestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             return onTap(e.getRawX(), e.getRawY()) || super.onSingleTapConfirmed(e);
@@ -364,53 +280,14 @@ public final class CameraActivity extends AppCompatActivity {
     }
 
     private class ScaleListener implements ScaleGestureDetector.OnScaleGestureListener {
-
-        /**
-         * Responds to scaling events for a gesture in progress.
-         * Reported by pointer motion.
-         *
-         * @param detector The detector reporting the event - use this to
-         *                 retrieve extended info about event state.
-         * @return Whether or not the detector should consider this event
-         * as handled. If an event was not handled, the detector
-         * will continue to accumulate movement until an event is
-         * handled. This can be useful if an application, for example,
-         * only wants to update scaling factors if the change is
-         * greater than 0.01.
-         */
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             return false;
         }
-
-        /**
-         * Responds to the beginning of a scaling gesture. Reported by
-         * new pointers going down.
-         *
-         * @param detector The detector reporting the event - use this to
-         *                 retrieve extended info about event state.
-         * @return Whether or not the detector should continue recognizing
-         * this gesture. For example, if a gesture is beginning
-         * with a focal point outside of a region where it makes
-         * sense, onScaleBegin() may return false to ignore the
-         * rest of the gesture.
-         */
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
             return true;
         }
-
-        /**
-         * Responds to the end of a scale gesture. Reported by existing
-         * pointers going up.
-         * <p/>
-         * Once a scale has ended, {@link ScaleGestureDetector#getFocusX()}
-         * and {@link ScaleGestureDetector#getFocusY()} will return focal point
-         * of the pointers remaining on the screen.
-         *
-         * @param detector The detector reporting the event - use this to
-         *                 retrieve extended info about event state.
-         */
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
             mCameraSource.doZoom(detector.getScaleFactor());

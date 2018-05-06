@@ -1,10 +1,8 @@
 package testr.testr.com;
 
-/**
- * Created by Kevin on 5/5/2018.
- */
+import java.io.Serializable;
 
-public class Question {
+public class Question implements Serializable {
     int number;
     String answer;
 

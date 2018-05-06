@@ -1,18 +1,3 @@
-/*
- * Copyright (C) The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package testr.testr.com;
 
 import android.Manifest;
@@ -112,9 +97,9 @@ public class CameraSourcePreview extends ViewGroup {
             try {
                 startIfReady();
             } catch (SecurityException se) {
-                Log.e(TAG,"Do not have permission to start the camera", se);
+                Log.e(TAG,"Do not have permission to Start the camera", se);
             } catch (IOException e) {
-                Log.e(TAG, "Could not start camera source.", e);
+                Log.e(TAG, "Could not Start camera source.", e);
             }
         }
 
@@ -157,10 +142,6 @@ public class CameraSourcePreview extends ViewGroup {
         float widthRatio = (float) viewWidth / (float) previewWidth;
         float heightRatio = (float) viewHeight / (float) previewHeight;
 
-        // To fill the view with the camera preview, while also preserving the correct aspect ratio,
-        // it is usually necessary to slightly oversize the child and to crop off portions along one
-        // of the dimensions.  We scale up based on the dimension requiring the most correction, and
-        // compute a crop offset for the other dimension.
         if (widthRatio > heightRatio) {
             childWidth = viewWidth;
             childHeight = (int) ((float) previewHeight * widthRatio);
@@ -172,8 +153,6 @@ public class CameraSourcePreview extends ViewGroup {
         }
 
         for (int i = 0; i < getChildCount(); ++i) {
-            // One dimension will be cropped.  We shift child over or up by this offset and adjust
-            // the size to maintain the proper aspect ratio.
             getChildAt(i).layout(
                     -1 * childXOffset, -1 * childYOffset,
                     childWidth - childXOffset, childHeight - childYOffset);
@@ -182,9 +161,9 @@ public class CameraSourcePreview extends ViewGroup {
         try {
             startIfReady();
         } catch (SecurityException se) {
-            Log.e(TAG,"Do not have permission to start the camera", se);
+            Log.e(TAG,"Do not have permission to Start the camera", se);
         } catch (IOException e) {
-            Log.e(TAG, "Could not start camera source.", e);
+            Log.e(TAG, "Could not Start camera source.", e);
         }
     }
 

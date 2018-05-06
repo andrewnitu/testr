@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="testr.testr.com.TestInpt"
-    tools:showIn="@layout/activity_test_inpt">
+    tools:context="testr.testr.com.TestInput"
+    tools:showIn="@layout/activity_test_input">
 
     <GridView
         android:layout_width="match_parent"

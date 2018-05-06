@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="testr.testr.com.TestInpt">
+    tools:context="testr.testr.com.TestInput">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -40,6 +40,8 @@
             android:layout_height="50dp"
             android:background="@drawable/rounded_shape"
             android:text="Submit"
+            android:id="@+id/submit"
+            android:onClick="onSubmitClick"
             android:textColor="#FFF"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"

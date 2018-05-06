@@ -1,18 +1,3 @@
-/*
- * Copyright (C) The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package testr.testr.com;
 
 import android.graphics.Canvas;
@@ -24,12 +9,10 @@ import com.google.android.gms.vision.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-/**
- * Graphic instance for rendering TextBlock position, size, and ID within an associated graphic
- * overlay view.
- */
-public class OcrGraphic extends GraphicOverlay.Graphic {
+public class OcrGraphic extends GraphicOverlay.Graphic implements Observer {
 
     private int mId;
 
@@ -72,13 +55,6 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
         return mText;
     }
 
-    /**
-     * Checks whether a point is within the bounding box of this graphic.
-     * The provided point should be relative to this graphic's containing overlay.
-     * @param x An x parameter in the relative context of the canvas.
-     * @param y A y parameter in the relative context of the canvas.
-     * @return True if the provided point is contained within this graphic's bounding box.
-     */
     public boolean contains(float x, float y) {
         ModifiedTextBlock text = mText;
         if (text == null) {
@@ -92,17 +68,16 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
         return (rect.left < x && rect.right > x && rect.top < y && rect.bottom > y);
     }
 
-    /**
-     * Draws the text block annotations for position, size, and raw value on the supplied canvas.
-     */
     @Override
     public void draw(Canvas canvas) {
-        ArrayList<Question> questions = new ArrayList<>();
+        ArrayList<Question> questions;
 
-        questions.add(new Question(1, "A"));
-        questions.add(new Question(2, "B"));
-        questions.add(new Question(3, "C"));
-        questions.add(new Question(4, "D"));
+        Model mModel = Model.getInstance();
+        mModel.addObserver(this);
+
+        mModel.initObservers();
+
+        questions = mModel.getCorrectAnswerSet();
 
         ModifiedTextBlock text = mText;
         if (text == null) {
@@ -132,7 +107,13 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
             try {
                 int questionNumber = Integer.parseInt(questionNumberText);
 
-                String questionAnswer = strippedQuestionText.substring(1, 2);
+                String questionAnswer = strippedQuestionText.substring(1, 2).toUpperCase();
+
+                ArrayList<Question> currentAnswers = mModel.getAnswer();
+
+                currentAnswers.set(questionNumber - 1, new Question(questionNumber, questionAnswer));
+
+                mModel.setAnswer(currentAnswers);
 
                 String correctAnswer = questions.get(questionNumber - 1).getAnswer();
 
@@ -142,5 +123,10 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
                 canvas.drawText(textComponents.get(i).getValue(), left, bottom, sTextPaint);
             }
         }
+    }
+
+    @Override
+    public void update(Observable observable, Object o) {
+        // not implemented
     }
 }

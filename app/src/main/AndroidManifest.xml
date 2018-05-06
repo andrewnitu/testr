@@ -15,18 +15,24 @@
 
         <activity android:name=".CameraActivity"/>
 
-        <activity
-            android:name=".TestInpt"
-            android:label="Solutions"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".Start">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".TestInput"
+            android:label="Solutions"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity android:name=".Graph"/>
+        <activity android:name=".AnswerEnter" />
+        <activity android:name=".ResultsActivity" />
+        <activity android:name=".statics"/>
     </application>
 
 </manifest>
