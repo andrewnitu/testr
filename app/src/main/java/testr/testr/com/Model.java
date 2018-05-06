@@ -85,7 +85,7 @@ class Model extends Observable {
         // Calculate the mark
         mark = (int) ((double) correct_num / (double) answer.size() * 100);
         studentScore.add(correct_num);
-        mark_s = String.valueOf(correct_num) +"/" +  String.valueOf(answer.size());
+        mark_s = String.valueOf(correct_num) + "/" +  String.valueOf(answer.size());
         studentScore_String.add(mark_s);
 
         count++;
@@ -121,7 +121,7 @@ class Model extends Observable {
             answer.add(new Question(q.number, "-"));
         }
     }
-    
+
     public void initObservers() {
         setChanged();
         notifyObservers();

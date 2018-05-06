@@ -17,9 +17,13 @@ public class OcrGraphic extends GraphicOverlay.Graphic implements Observer {
     private int mId;
 
     private static final int TEXT_COLOR = Color.WHITE;
+    private static final int CORRECT_COLOR = Color.parseColor("#00FF00");
+    private static final int INCORRECT_COLOR = Color.parseColor("#FF0000");
 
     private static Paint sRectPaint;
     private static Paint sTextPaint;
+    private static Paint sCorrectPaint;
+    private static Paint sIncorrectPaint;
     private final ModifiedTextBlock mText;
 
     OcrGraphic(GraphicOverlay overlay, ModifiedTextBlock text) {
@@ -32,6 +36,20 @@ public class OcrGraphic extends GraphicOverlay.Graphic implements Observer {
             sRectPaint.setColor(TEXT_COLOR);
             sRectPaint.setStyle(Paint.Style.STROKE);
             sRectPaint.setStrokeWidth(4.0f);
+        }
+
+        if (sCorrectPaint == null) {
+            sCorrectPaint = new Paint();
+            sCorrectPaint.setColor(CORRECT_COLOR);
+            sCorrectPaint.setTextSize(54.0f);
+            sCorrectPaint.setFakeBoldText(true);
+        }
+
+        if (sIncorrectPaint == null) {
+            sIncorrectPaint = new Paint();
+            sIncorrectPaint.setColor(INCORRECT_COLOR);
+            sIncorrectPaint.setTextSize(54.0f);
+            sIncorrectPaint.setFakeBoldText(true);
         }
 
         if (sTextPaint == null) {
@@ -117,7 +135,11 @@ public class OcrGraphic extends GraphicOverlay.Graphic implements Observer {
 
                 String correctAnswer = questions.get(questionNumber - 1).getAnswer();
 
-                canvas.drawText(textComponents.get(i).getValue() + (questionAnswer.equals(correctAnswer) ? " Correct" : " Incorrect"), left, bottom, sTextPaint);
+                if (questionAnswer.equals(correctAnswer)) {
+                    canvas.drawText(textComponents.get(i).getValue() + " Correct", left, bottom, sCorrectPaint);
+                } else {
+                    canvas.drawText(textComponents.get(i).getValue() + " Incorrect", left, bottom, sIncorrectPaint);
+                }
             }
             catch(Exception e) {
                 canvas.drawText(textComponents.get(i).getValue(), left, bottom, sTextPaint);
