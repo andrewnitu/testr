@@ -12,8 +12,10 @@
         <activity
             android:name=".TestInpt"
             android:label="Solutions"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".Graph">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
