@@ -8,18 +8,18 @@
     android:keepScreenOn="true"
     android:orientation="vertical">
 
-    <com.example.andrew.myapplication.ui.CameraSourcePreview
+    <testr.testr.com.CameraSourcePreview
         android:id="@+id/preview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0.8">
 
-        <com.example.andrew.myapplication.ui.GraphicOverlay
+        <testr.testr.com.GraphicOverlay
             android:id="@+id/graphicOverlay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-    </com.example.andrew.myapplication.ui.CameraSourcePreview>
+    </testr.testr.com.CameraSourcePreview>
 
     <Button
         android:id="@+id/next"

@@ -13,10 +13,6 @@ public class Question {
         this.answer = answer;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
     public int getNumber() {
         return this.number;
     }
@@ -24,4 +20,6 @@ public class Question {
     public String getAnswer() {
         return this.answer;
     }
+
+    public void setNumber(int number) { this.number = number; }
 }
